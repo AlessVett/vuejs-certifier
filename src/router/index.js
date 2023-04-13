@@ -1,41 +1,38 @@
 import { createRouter, createWebHistory } from "vue-router";
-import axios from 'axios';
+import Axios from 'axios';
 
 const router = createRouter({
     history: createWebHistory('/'),
     routes: []
 });
 
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
     switch (to.path) {
         case '/login': {
-            axios.post('http://auth.localhost:3000/login', {
-                params: {
-                    username: 'test',
-                    password: 'test'
-                }
-            }).then(data => {
-                if(data.data.status) {
-                    const { status, token, user } = data.data;
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('user', JSON.stringify(user));
-                }
-            })
+            const response = await Axios.post('http://auth.localhost:3000/login', {
+                username: 'test',
+                password: 'test'
+            });
+
+            console.log(response);
+
+            if (response.data.status) {
+                const {status, token, user} = response.data;
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
+            }
             break;
         }
         case '/signup': {
-            axios.post('http://auth.localhost:3000/signup', {
-                params: {
-                    username: 'test',
-                    password: 'test'
-                }
-            }).then(data => {
-                console.log(data)
-            })
+            const response = await Axios.post('http://auth.localhost:3000/signup', {
+                username: 'test',
+                password: 'test'
+            });
+            console.log(response.data)
             break;
         }
         default: {
-            axios.post('http://auth.localhost:3000/').then(data => {
+            Axios.post('http://auth.localhost:3000/').then(data => {
                 console.log(data)
             })
             break;
